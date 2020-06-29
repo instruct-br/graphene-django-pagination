@@ -4,9 +4,9 @@ This package adds offset-based pagination to [Graphene-Django](https://docs.grap
 
 ## Installation
 
-```
-TODO
-```
+Using [Pipenv:](https://github.com/pypa/pipenv)
+
+    $ pipenv install https://github.com/instruct-br/graphene-django-pagination/archive/master.zip
 
 ## Documentation
 
