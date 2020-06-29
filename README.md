@@ -63,7 +63,7 @@ class Query(ObjectType):
 ##### 4.1 - Query without limit, offset and filter
 
 ```graphql
-query allSanCustomers {
+query customers {
   customers {
     totalCount
     results {
@@ -113,7 +113,7 @@ query allSanCustomers {
 ##### 4.2 - Query with only limit and offset
 
 ```graphql
-query allSanCustomers {
+query customers {
   customers(limit: 3, offset: 0) {
     totalCount
     results {
@@ -151,7 +151,7 @@ query allSanCustomers {
 ##### 4.3 - Query with limit, offset and filter
 
 ```graphql
-query allSanCustomers {
+query customers {
   customers(limit: 3, offset: 0, nickname_Istartswith: "E") {
     totalCount
     results {
