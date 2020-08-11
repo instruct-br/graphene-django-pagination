@@ -5,7 +5,6 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphene_django.utils import maybe_queryset
 from django.core.paginator import Paginator
 from django.db.models.query import QuerySet
-from collections import OrderedDict
 
 from . import PaginationConnection, PageInfoExtra
 
@@ -96,6 +95,9 @@ def connection_from_list_slice(
             )
         )
     else:
+        assert isinstance(limit, int), "Limit must be of type int"
+        assert limit > 0, "Limit must be positive integer greater than 0"
+
         paginator = Paginator(list_slice, limit)
         _slice = list_slice[offset:(offset+limit)]
 
