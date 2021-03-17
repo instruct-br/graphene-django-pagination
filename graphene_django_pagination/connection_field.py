@@ -69,7 +69,7 @@ class DjangoPaginationConnectionField(DjangoFilterConnectionField):
         else:
             _len = len(iterable)
 
-        ordering = args.get("ordering", None)
+        ordering = args.get("ordering")
 
         if ordering:
             iterable = connection_from_list_ordering(iterable, ordering)
@@ -126,7 +126,7 @@ def connection_from_list_slice(
 
 
 def connection_from_list_ordering(items_list, ordering):
-    [field, order] = ordering.split(',')
+    field, order = ordering.split(',')
 
     order = '-' if order == 'asc' else ''
     field = re.sub(r'(?<!^)(?=[A-Z])', '_', field).lower()
