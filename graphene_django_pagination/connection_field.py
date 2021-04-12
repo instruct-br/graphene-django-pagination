@@ -1,6 +1,7 @@
+import re
 import math
 
-from graphene import Int
+from graphene import Int, String
 from graphene_django.filter import DjangoFilterConnectionField
 from graphene_django.utils import maybe_queryset
 from django.core.paginator import Paginator
@@ -29,6 +30,7 @@ class DjangoPaginationConnectionField(DjangoFilterConnectionField):
 
         kwargs.setdefault("limit", Int(description="Query limit"))
         kwargs.setdefault("offset", Int(description="Query offset"))
+        kwargs.setdefault("ordering", String(description="Query order"))
 
         super(DjangoPaginationConnectionField, self).__init__(
             type,
@@ -66,6 +68,11 @@ class DjangoPaginationConnectionField(DjangoFilterConnectionField):
             _len = iterable.count()
         else:
             _len = len(iterable)
+
+        ordering = args.get("ordering")
+
+        if ordering:
+            iterable = connection_from_list_ordering(iterable, ordering)
 
         connection = connection_from_list_slice(
             iterable,
@@ -116,3 +123,12 @@ def connection_from_list_slice(
                 has_next_page=page.has_next()
             )
         )
+
+
+def connection_from_list_ordering(items_list, ordering):
+    field, order = ordering.split(',')
+
+    order = '-' if order == 'asc' else ''
+    field = re.sub(r'(?<!^)(?=[A-Z])', '_', field).lower()
+
+    return items_list.order_by(f'{order}{field}')

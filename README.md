@@ -12,7 +12,10 @@ Using [Pipenv:](https://github.com/pypa/pipenv)
 
 **Fields:**
 
-1.  **DjangoPaginationConnectionField:** It allows paginate the query using offset-based method and returns the `totalCount` field that indicates the total query results.
+**DjangoPaginationConnectionField**
+
+- 1. It allows paginate the query using offset-based method and returns the `totalCount` field that indicates the total query results.
+- 2. Also, it is possible to order list using the pattern `input,enum` just sendind `ordering` field.
 
 ## Example
 
@@ -175,6 +178,94 @@ query customers {
         {
           "id": 6,
           "name": "Eden Hazard"
+        }
+      ]
+    }
+  }
+}
+```
+
+##### 4.4 - Query with ordering
+
+```graphql
+query customers {
+  customers(ordering: "name,asc") {
+    totalCount
+    results {
+      id
+      name
+    }
+  }
+}
+```
+
+```json
+{
+  "data": {
+    "customers": {
+        "totalCount": 6,
+        "results": [
+          {
+            "id": 6,
+            "name": "Eden Hazard"
+          },
+          {
+            "id": 2,
+            "name": "Edson Arantes do Nascimento"
+          },
+          {
+            "id": 1,
+            "name": "Figo"
+          },
+          {
+            "id": 4,
+            "name": "Ibrahimović"
+          },
+          {
+            "id": 3,
+            "name": "Lionel Messi"
+          }
+          {
+            "id": 5,
+            "name": "Paul Pogba"
+          }
+        ]
+    }
+  }
+}
+```
+
+##### 4.5 - Query with ordering, limit and offset
+
+```graphql
+query customers {
+  customers(ordering: "id,desc", limit: 3, offset: 0) {
+    totalCount
+    results {
+      id
+      name
+    }
+  }
+}
+```
+
+```json
+{
+  "data": {
+    "customers": {
+      "totalCount": 6,
+      "results": [
+        {
+          "id": 6,
+          "name": "Eden Hazard"
+        },
+        {
+          "id": 5,
+          "name": "Paul Pogba"
+        },
+        {
+          "id": 4,
+          "name": "Ibrahimović"
         }
       ]
     }
