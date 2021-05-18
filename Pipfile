@@ -4,9 +4,9 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-django-filter = "==2.1.0"
+django-filter = ">=2.1.0"
 graphene-django = ">=2.6.0"
-django = "==2.2.6"
+django = ">=2.2.6"
 
 [dev-packages]
 pytest = "*"
