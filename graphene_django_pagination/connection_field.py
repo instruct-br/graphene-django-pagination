@@ -54,17 +54,10 @@ class DjangoPaginationConnectionField(DjangoFilterConnectionField):
         return NodeConnection
 
     @classmethod
-    def resolve_connection(cls, connection, default_manager, args, iterable):
-        if iterable is None:
-            iterable = default_manager
-
+    def resolve_connection(cls, connection, args, iterable, max_limit=None):
         iterable = maybe_queryset(iterable)
 
         if isinstance(iterable, QuerySet):
-            if iterable.model.objects is not default_manager:
-                default_queryset = maybe_queryset(default_manager)
-                iterable = cls.merge_querysets(default_queryset, iterable)
-
             _len = iterable.count()
         else:
             _len = len(iterable)
