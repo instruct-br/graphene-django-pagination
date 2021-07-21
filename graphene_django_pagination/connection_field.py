@@ -8,7 +8,7 @@ from django.core.paginator import Paginator
 from django.db.models.query import QuerySet
 
 from . import PaginationConnection, PageInfoExtra
-
+from django import __version__ as django_version
 
 class DjangoPaginationConnectionField(DjangoFilterConnectionField):
     def __init__(
@@ -54,29 +54,44 @@ class DjangoPaginationConnectionField(DjangoFilterConnectionField):
         return NodeConnection
 
     @classmethod
-    def resolve_connection(cls, connection, default_manager, args, iterable):
-        if iterable is None:
-            iterable = default_manager
+    def resolve_connection(cls, connection, *args, **kwargs):
+        # The signature of this method is different between
+        # versions 2.x and 3.x of Django this implementation
+        # maintains compatibility between versions
+        if django_version >= '3.0.0':
+            arguments=args[0]
+            iterable=args[1]
+            max_limit=kwargs.get('max_limit')
 
-        iterable = maybe_queryset(iterable)
+            iterable = maybe_queryset(iterable)
 
-        if isinstance(iterable, QuerySet):
-            if iterable.model.objects is not default_manager:
-                default_queryset = maybe_queryset(default_manager)
-                iterable = cls.merge_querysets(default_queryset, iterable)
-
-            _len = iterable.count()
-        else:
             _len = len(iterable)
 
-        ordering = args.get("ordering")
+        else:
+            default_manager=args[0]
+            arguments=args[1]
+            iterable=args[2]
+
+            if iterable is None:
+                iterable = default_manager
+
+            iterable = maybe_queryset(iterable)
+
+            if isinstance(iterable, QuerySet):
+                if iterable.model.objects is not default_manager:
+                    default_queryset = maybe_queryset(default_manager)
+                    iterable = cls.merge_querysets(default_queryset, iterable)
+
+            _len = len(iterable)
+
+        ordering = arguments.get("ordering")
 
         if ordering:
             iterable = connection_from_list_ordering(iterable, ordering)
 
         connection = connection_from_list_slice(
             iterable,
-            args,
+            arguments,
             connection_type=connection,
             pageinfo_type=PageInfoExtra,
         )
